@@ -10,7 +10,7 @@
 - MusicSwitcher.cs (AudioSwitcherOptimized)  плавное переключение от вступительного клипа к циклическому фону (fade-out/in).
 - PlayerMovementSound.cs  звук шагов/движения: автозапуск по скорости, fade-in/out, луп.
 - SculptureInfoPanel.cs  показ/скрытие инфопанелей и доп. объектов у скульптур по дистанции игрока с плавной анимацией и управлением светом.
-- SimpleVRLocomotion.cs  локомоция через OVRInput + CharacterController: мульти-лучевой грaундчек, гравитация, следование рельефу, защита от сфер.
+- SimpleVRLocomotion.cs  передвижение через OVRInput + CharacterController: мульти-лучевой грaундчек, гравитация, следование рельефу, защита от сфер.
 - XButtonToggleObjects.cs  однократное переключение наборов объектов по X (левый контроллер), кулдаун, логи.
 
 ### Ссылки
