@@ -2,21 +2,21 @@ using UnityEngine;
 
 public class SimpleVRLocomotion : MonoBehaviour
 {
-    [Header("��������")]
+    [Header("Ссылки")]
     public OVRCameraRig cameraRig;
     public float moveSpeed = 2.0f;
 
-    [Header("������")]
+    [Header("Гравитация и высота")]
     public float normalGravity = -9.81f;
     public float initialGravity = -0.01f;
-    public float groundCheckDistance = 0.3f; // ��������� ��� ������� �����������
+    public float groundCheckDistance = 0.3f; // Дистанция луча до земли
     public float terrainFollowSpeed = 5.0f;
     public float terrainOffsetY = 1.0f;
 
-    [Header("����������� ��������")]
+    [Header("Параметры поверхности")]
     public string targetTerrainTag = "Terrain";
     public LayerMask terrainLayerMask;
-    public bool showDebugRays = true; // ��� �������
+    public bool showDebugRays = true; // Рисовать лучи
 
     [Header("Ограничения по коллайдерам")]
     public bool preventClimbingSphereColliders = true;
@@ -28,13 +28,13 @@ public class SimpleVRLocomotion : MonoBehaviour
     private float currentGravity;
     private bool autoUpdateHeight = true;
 
-    // ��� ������������� �������� ������
+    // Смещения для мульти‑рейкаста
     private Vector3[] raycastOffsets = new Vector3[] {
-        Vector3.zero,                          // �����
-        new Vector3(0.2f, 0, 0.2f),           // ������-������
-        new Vector3(-0.2f, 0, 0.2f),          // ������-�����
-        new Vector3(0.2f, 0, -0.2f),          // �����-������
-        new Vector3(-0.2f, 0, -0.2f)          // �����-�����
+        Vector3.zero,                          // центр
+        new Vector3(0.2f, 0, 0.2f),           // вперёд‑право
+        new Vector3(-0.2f, 0, 0.2f),          // вперёд‑лево
+        new Vector3(0.2f, 0, -0.2f),          // назад‑право
+        new Vector3(-0.2f, 0, -0.2f)          // назад‑лево
     };
 
     void Start()
@@ -74,7 +74,7 @@ public class SimpleVRLocomotion : MonoBehaviour
         }
     }
 
-    // ���������� �������� ����� � �������������� ������
+    // Проверка земли несколькими лучами
     void MultiRaycastGroundCheck()
     {
         isGrounded = false;
@@ -88,13 +88,13 @@ public class SimpleVRLocomotion : MonoBehaviour
             {
                 isGrounded = true;
 
-                // ���������� ��� ��� �������
+                // Отрисовка лучей
                 if (showDebugRays)
                 {
                     Debug.DrawRay(rayOrigin, Vector3.down * (groundCheckDistance + 0.2f), Color.green, 0.1f);
                 }
 
-                // �������� ������� ��������
+                // Первый касание поверхности
                 if (!hasLandedOnTerrain)
                 {
                     if (hit.collider.CompareTag(targetTerrainTag) ||
@@ -102,11 +102,11 @@ public class SimpleVRLocomotion : MonoBehaviour
                     {
                         hasLandedOnTerrain = true;
                         currentGravity = normalGravity;
-                        Debug.Log("����� ����������� �� ������� �������. ���������� �������������.");
+                        Debug.Log("Приземлились на основную поверхность. Включаю нормальную гравитацию.");
                     }
                 }
 
-                // ���� ����� ���� ���� �������, ����� ���������� ��������
+                // Дальше лучи не нужны
                 break;
             }
             else if (showDebugRays)
@@ -200,15 +200,15 @@ public class SimpleVRLocomotion : MonoBehaviour
         }
     }
 
-    //       (����� ������� �� ������ ��������)
+    // Форс включения нормальной гравитации (если нужно вручную)
     public void ForceEnableNormalGravity()
     {
         hasLandedOnTerrain = true;
         currentGravity = normalGravity;
-        Debug.Log("���������� ������������� �������������.");
+        Debug.Log("Принудительно включена нормальная гравитация.");
     }
 
-    // ����� ��� ���������/���������� ���������� �����
+    // Вкл/выкл отладочных лучей
     public void SetDebugRays(bool enabled)
     {
         showDebugRays = enabled;

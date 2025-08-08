@@ -1,20 +1,20 @@
 using UnityEngine;
-using System.Collections; // Необходимо для корутин
+using System.Collections; // РќСѓР¶РµРЅ РґР»СЏ РєРѕСЂСѓС‚РёРЅ
 
 public class PlayerMovementSound : MonoBehaviour
 {
-    [Header("Настройки звука")]
+    [Header("Р—РІСѓРє РґРІРёР¶РµРЅРёСЏ")]
     [SerializeField] private AudioClip movementSoundClip;
-    [SerializeField][Range(0f, 1f)] private float targetVolume = 0.5f; // Целевая громкость при движении
+    [SerializeField][Range(0f, 1f)] private float targetVolume = 0.5f; // Р“СЂРѕРјРєРѕСЃС‚СЊ РїСЂРё РґРІРёР¶РµРЅРёРё
     [SerializeField] private bool loopSound = true;
-    [SerializeField] private float minMovementSpeed = 0.1f; // Порог скорости для активации звука
-    [SerializeField] private float fadeDuration = 0.5f; // Длительность плавного перехода
+    [SerializeField] private float minMovementSpeed = 0.1f; // РџРѕСЂРѕРі СЃРєРѕСЂРѕСЃС‚Рё РґР»СЏ Р·Р°РїСѓСЃРєР° Р·РІСѓРєР°
+    [SerializeField] private float fadeDuration = 0.5f; // Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ С„РµР№РґР°
 
     private AudioSource audioSource;
     private Vector3 lastPosition;
     private float movementSpeed;
-    private Coroutine fadeCoroutine = null; // Хранит ссылку на активную корутину затухания/появления
-    private bool shouldBePlaying = false; // Флаг, должен ли звук проигрываться
+    private Coroutine fadeCoroutine = null; // РўРµРєСѓС‰Р°СЏ РєРѕСЂСѓС‚РёРЅР° С„РµР№РґР°
+    private bool shouldBePlaying = false; // Р”РѕР»Р¶РµРЅ Р»Рё Р·РІСѓРє РёРіСЂР°С‚СЊ
 
     void Start()
     {
@@ -26,7 +26,7 @@ public class PlayerMovementSound : MonoBehaviour
 
         audioSource.clip = movementSoundClip;
         audioSource.loop = loopSound;
-        audioSource.volume = 0f; // Начинаем с нулевой громкости
+        audioSource.volume = 0f; // РЎС‚Р°СЂС‚СѓСЋ СЃ РЅСѓР»СЏ
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0f;
 
@@ -35,28 +35,28 @@ public class PlayerMovementSound : MonoBehaviour
 
     void Update()
     {
-        // Рассчитываем скорость движения
+        // РЎС‡РёС‚Р°СЋ СЃРєРѕСЂРѕСЃС‚СЊ
         movementSpeed = Vector3.Distance(transform.position, lastPosition) / Time.deltaTime;
         lastPosition = transform.position;
 
-        // Определяем, должен ли звук играть
+        // РџСЂРѕРІРµСЂСЏСЋ, РЅСѓР¶РЅРѕ Р»Рё РёРіСЂР°С‚СЊ Р·РІСѓРє
         bool currentShouldBePlaying = movementSpeed > minMovementSpeed;
 
-        // Если состояние изменилось (начали или закончили двигаться)
+        // Р•СЃР»Рё СЃРѕСЃС‚РѕСЏРЅРёРµ РёР·РјРµРЅРёР»РѕСЃСЊ вЂ” РїРµСЂРµРєР»СЋС‡Р°СЋ С„РµР№Рґ
         if (currentShouldBePlaying != shouldBePlaying)
         {
             shouldBePlaying = currentShouldBePlaying;
 
-            // Останавливаем предыдущую корутину, если она была
+            // РћСЃС‚Р°РЅР°РІР»РёРІР°СЋ РїСЂРµРґС‹РґСѓС‰РёР№ С„РµР№Рґ
             if (fadeCoroutine != null)
             {
                 StopCoroutine(fadeCoroutine);
             }
 
-            // Запускаем новую корутину для плавного перехода
+            // Р’РєР»СЋС‡Р°СЋ/РІС‹РєР»СЋС‡Р°СЋ Р·РІСѓРє СЃ С„РµР№РґРѕРј
             if (shouldBePlaying)
             {
-                // Если звук еще не играет, запускаем
+                // Р•СЃР»Рё РЅРµ РёРіСЂР°РµС‚ вЂ” Р·Р°РїСѓСЃРєР°СЋ
                 if (!audioSource.isPlaying)
                 {
                     audioSource.Play();
@@ -70,7 +70,7 @@ public class PlayerMovementSound : MonoBehaviour
         }
     }
 
-    // Корутина для плавного изменения громкости
+    // Р¤РµР№Рґ РіСЂРѕРјРєРѕСЃС‚Рё Р·РІСѓРєР°
     IEnumerator FadeAudio(float targetVol, float duration)
     {
         float startVolume = audioSource.volume;
@@ -78,21 +78,21 @@ public class PlayerMovementSound : MonoBehaviour
 
         while (time < duration)
         {
-            // Изменяем громкость пропорционально времени
+            // РџР»Р°РІРЅРѕ РјРµРЅСЏСЋ РіСЂРѕРјРєРѕСЃС‚СЊ
             audioSource.volume = Mathf.Lerp(startVolume, targetVol, time / duration);
             time += Time.deltaTime;
-            yield return null; // Ждем следующего кадра
+            yield return null;
         }
 
-        // Устанавливаем точное конечное значение
+        // Р¤РёРєСЃРёСЂСѓСЋ РёС‚РѕРіРѕРІСѓСЋ РіСЂРѕРјРєРѕСЃС‚СЊ
         audioSource.volume = targetVol;
 
-        // Если громкость стала нулевой, останавливаем проигрывание
+        // Р•СЃР»Рё СѓС€Р»Рё РІ РЅРѕР»СЊ вЂ” СЃС‚Р°РІР»СЋ РЅР° РїР°СѓР·Сѓ
         if (targetVol == 0f)
         {
-            audioSource.Pause(); // Используем Pause вместо Stop, чтобы сохранить позицию
+            audioSource.Pause();
         }
 
-        fadeCoroutine = null; // Сбрасываем ссылку на корутину
+        fadeCoroutine = null;
     }
 }

@@ -3,28 +3,28 @@ using System.Collections;
 
 public class AudioSwitcherOptimized : MonoBehaviour
 {
-    public AudioSource audioSource; // Один единственный AudioSource
-    public AudioClip firstClip;     // Первый клип
-    public AudioClip loopingClip;   // Зацикленный клип
+    public AudioSource audioSource; // РСЃС‚РѕС‡РЅРёРє Р·РІСѓРєР°
+    public AudioClip firstClip;     // РџРµСЂРІС‹Р№ С‚СЂРµРє
+    public AudioClip loopingClip;   // Р¦РёРєР»РёС‡РЅС‹Р№ С‚СЂРµРє
 
     public float fadeDuration = 2.0f;
 
     void Start()
     {
       
-        // Проверяем, что у нас есть AudioSource
+        // РџСЂРѕРІРµСЂСЏСЋ, С‡С‚Рѕ РµСЃС‚СЊ AudioSource
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
             if (audioSource == null)
             {
-                Debug.LogError("[AudioSwitcherOptimized] AudioSource не найден!");
+                Debug.LogError("[AudioSwitcherOptimized] AudioSource РЅРµ РЅР°Р№РґРµРЅ!");
                 enabled = false;
                 return;
             }
         }
 
-        // Начинаем с первого клипа
+        // РЎС‚Р°СЂС‚СѓСЋ СЃ РїРµСЂРІРѕРіРѕ С‚СЂРµРєР°
         if (firstClip != null)
         {
             audioSource.clip = firstClip;
@@ -32,12 +32,12 @@ public class AudioSwitcherOptimized : MonoBehaviour
             audioSource.volume = 1.0f;
             audioSource.Play();
 
-            // Планируем переключение
-            StartCoroutine(SwitchToLoopingAfterDelay(firstClip.length * 0.95f)); // Переключаемся чуть раньше конца
+            // РџРѕС‡С‚Рё РІ РєРѕРЅС†Рµ РїР»Р°РІРЅРѕ РїРµСЂРµРєР»СЋС‡Р°СЋСЃСЊ РЅР° Р»СѓРї
+            StartCoroutine(SwitchToLoopingAfterDelay(firstClip.length * 0.95f));
         }
         else if (loopingClip != null)
         {
-            // Если первого клипа нет, сразу запускаем зацикленный
+            // Р•СЃР»Рё РїРµСЂРІРѕРіРѕ РЅРµС‚ вЂ” СЃСЂР°Р·Сѓ Р»СѓРї
             audioSource.clip = loopingClip;
             audioSource.loop = true;
             audioSource.volume = 1.0f;
@@ -47,10 +47,10 @@ public class AudioSwitcherOptimized : MonoBehaviour
 
     IEnumerator SwitchToLoopingAfterDelay(float delay)
     {
-        // Просто ждем указанное время
+        // Р–РґСѓ РїРµСЂРµРґ РїРµСЂРµРєР»СЋС‡РµРЅРёРµРј
         yield return new WaitForSeconds(delay);
 
-        // Плавно уменьшаем громкость
+        // Р¤РµР№Рґ-Р°СѓС‚
         float startVolume = audioSource.volume;
         float elapsedTime = 0;
 
@@ -61,27 +61,27 @@ public class AudioSwitcherOptimized : MonoBehaviour
             yield return null;
         }
 
-        // Остановка первого клипа и явная пауза
+        // РћСЃС‚Р°РЅР°РІР»РёРІР°СЋ Рё РѕС‡РёС‰Р°СЋ
         audioSource.Stop();
-        audioSource.clip = null; // Освобождаем ссылку на клип
+        audioSource.clip = null;
 
-        yield return new WaitForSeconds(0.1f); // Явная пауза
+        yield return new WaitForSeconds(0.1f);
 
-        // Переключаемся на зацикленный клип (без проверок)
+        // Р’РєР»СЋС‡Р°СЋ Р»СѓРї СЃ С„РµР№РґвЂ‘РёРЅРѕРј
         if (loopingClip != null)
         {
-            // Выполняем только в LateUpdate
+            // РљР°РґСЂ РЅР° РїРѕРґРіРѕС‚РѕРІРєСѓ
             yield return new WaitForEndOfFrame();
 
             audioSource.clip = loopingClip;
             audioSource.loop = true;
-            audioSource.volume = 0; // Начинаем с тишины
+            audioSource.volume = 0;
             audioSource.Play();
 
-            // Явная пауза перед началом нарастания громкости
+            // РќРµР±РѕР»СЊС€Р°СЏ РїР°СѓР·Р°
             yield return new WaitForSeconds(0.1f);
 
-            // Плавно увеличиваем громкость
+            // Р¤РµР№РґвЂ‘РёРЅ
             elapsedTime = 0;
 
             while (elapsedTime < fadeDuration)
@@ -91,7 +91,7 @@ public class AudioSwitcherOptimized : MonoBehaviour
                 yield return null;
             }
 
-            audioSource.volume = 1.0f; // Убеждаемся, что громкость стала 1
+            audioSource.volume = 1.0f;
         }
     }
 }

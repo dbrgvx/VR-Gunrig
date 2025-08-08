@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Meta.XR; // Убедитесь, что это подключено для OVRPlugin и OVRInput
+using Meta.XR; // РСЃРїРѕР»СЊР·СѓСЋ OVRPlugin Рё OVRInput
 
 public class MenuButtonController : MonoBehaviour
 {
@@ -14,16 +14,15 @@ public class MenuButtonController : MonoBehaviour
     private bool canPress = true;
     private float cooldownTimer = 0f;
     private float hmdRemovedTimer = 0f;
-    // Эта переменная отслеживает, был ли шлем снят в текущем жизненном цикле экземпляра скрипта
+    // Р§С‚РѕР±С‹ РЅРµ РїРµСЂРµР·Р°РїСѓСЃРєР°С‚СЊ СЃС†РµРЅСѓ РјРЅРѕРіРѕРєСЂР°С‚РЅРѕ Р·Р° РѕРґРёРЅ СЃРµР°РЅСЃ
     private bool hmdWasRemovedInThisInstance = false;
 
-    // Статическая переменная для отслеживания перезапуска между загрузками сцен
+    // Р¤Р»Р°Рі, С‡С‚Рѕ СЃС†РµРЅР° СѓР¶Рµ РїРµСЂРµР·Р°РїСѓСЃРєР°Р»Р°СЃСЊ РёР·вЂ‘Р·Р° СЃРЅСЏС‚РёСЏ С€Р»РµРјР°
     private static bool sceneHasRestartedDueToHmdRemoval = false;
 
     void Awake()
     {
-        // Если шлем надет при загрузке сцены, это означает, что предыдущий "сеанс снятия шлема" завершен.
-        // Сбрасываем статический флаг, чтобы разрешить новый перезапуск при следующем снятии.
+        // РџСЂРё СЃС‚Р°СЂС‚Рµ РїСЂРѕРІРµСЂСЏСЋ, РЅР°РґРµС‚ Р»Рё С€Р»РµРј, Рё СЃР±СЂР°СЃС‹РІР°СЋ С„Р»Р°Рі РїРµСЂРµР·Р°РїСѓСЃРєР°
         if (OVRPlugin.userPresent)
         {
             sceneHasRestartedDueToHmdRemoval = false;
@@ -32,7 +31,7 @@ public class MenuButtonController : MonoBehaviour
 
     void Update()
     {
-        // Кулдаун для кнопки
+        // РљСѓР»РґР°СѓРЅ РЅР° РєРЅРѕРїРєСѓ
         if (!canPress)
         {
             cooldownTimer -= Time.unscaledDeltaTime;
@@ -42,11 +41,10 @@ public class MenuButtonController : MonoBehaviour
             }
         }
 
-        // Проверка нажатия кнопки A на правом контроллере
+        // РљРЅРѕРїРєР° A РЅР° РїСЂР°РІРѕРј РєРѕРЅС‚СЂРѕР»Р»РµСЂРµ
         if (canPress && OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
         {
-            // Если перезапускаем сцену кнопкой, также сбросим статический флаг HMD,
-            // чтобы детектор снятия шлема сработал корректно после ручного перезапуска.
+            // РЎР±СЂР°СЃС‹РІР°СЋ С„Р»Р°Рі, РµСЃР»Рё РїРµСЂРµР·Р°РїСѓСЃРє РґРµР»Р°СЋ РІСЂСѓС‡РЅСѓСЋ
             sceneHasRestartedDueToHmdRemoval = false;
             RestartCurrentScene();
 
@@ -54,49 +52,43 @@ public class MenuButtonController : MonoBehaviour
             cooldownTimer = buttonCooldown;
         }
 
-        // Проверка надет ли шлем
+        // РћС‚СЃР»РµР¶РёРІР°СЋ СЃРЅСЏС‚РёРµ С€Р»РµРјР°
         if (enableHmdDetection)
         {
             bool hmdIsWorn = OVRPlugin.userPresent;
 
-            if (!hmdIsWorn) // Шлем СНЯТ
+            if (!hmdIsWorn) // С€Р»РµРј СЃРЅСЏС‚
             {
-                // Если шлем только что был зафиксирован как снятый (в этом экземпляре скрипта)
-                // И сцена ЕЩЕ НЕ была перезапущена из-за снятия шлема в текущей "сессии без шлема"
+                // РџРµСЂРІРѕРµ СЃРЅСЏС‚РёРµ Р·Р° СЃРµСЃСЃРёСЋ вЂ” СЃС‚Р°СЂС‚СѓСЋ С‚Р°Р№РјРµСЂ
                 if (!hmdWasRemovedInThisInstance && !sceneHasRestartedDueToHmdRemoval)
                 {
                     hmdWasRemovedInThisInstance = true;
                     hmdRemovedTimer = hmdRemovalDelay;
                 }
-                // Иначе, если шлем продолжает быть снятым, таймер активен,
-                // и мы еще не перезапускались из-за снятия шлема в этой "сессии без шлема"
+                // РўРёРєР°СЋ С‚Р°Р№РјРµСЂ, РїРѕРєР° РЅРµ РїРµСЂРµР·Р°РїСѓСЃС‚РёР»Рё СЃС†РµРЅСѓ
                 else if (hmdWasRemovedInThisInstance && !sceneHasRestartedDueToHmdRemoval)
                 {
                     hmdRemovedTimer -= Time.unscaledDeltaTime;
 
                     if (hmdRemovedTimer <= 0)
                     {
-                        // Устанавливаем статический флаг ПЕРЕД перезапуском.
-                        // Этот флаг сохранится после перезагрузки сцены.
+                        // РџРµСЂРµР·Р°РїСѓСЃРєР°СЋ СЃС†РµРЅСѓ РїРѕСЃР»Рµ Р·Р°РґРµСЂР¶РєРё
                         sceneHasRestartedDueToHmdRemoval = true;
                         RestartCurrentScene();
-                        // Переменные экземпляра hmdWasRemovedInThisInstance и hmdRemovedTimer
-                        // сбросятся при загрузке сцены. Статический флаг предотвратит повторный запуск таймера.
                     }
                 }
             }
-            else // Шлем НАДЕТ
+            else // С€Р»РµРј РЅР°РґРµС‚
             {
-                // Если шлем был ранее помечен как снятый (этим экземпляром скрипта) и теперь надет
+                // РЎР±СЂР°СЃС‹РІР°СЋ Р»РѕРєР°Р»СЊРЅС‹Рµ С„Р»Р°РіРё РїСЂРё РІРѕР·РІСЂР°С‚Рµ С€Р»РµРјР°
                 if (hmdWasRemovedInThisInstance)
                 {
-                    hmdWasRemovedInThisInstance = false; // Сбрасываем флаг экземпляра
-                    hmdRemovedTimer = 0f; // Сбрасываем таймер на всякий случай
+                    hmdWasRemovedInThisInstance = false;
+                    hmdRemovedTimer = 0f;
                 }
 
-                // Важно: если шлем надет, любая "сессия без шлема", которая могла вызвать перезапуск, окончена.
-                // Поэтому сбрасываем статический флаг. Это также обрабатывается в Awake, но здесь для надежности.
-                if (sceneHasRestartedDueToHmdRemoval) // Если флаг был true, а шлем теперь надет
+                // Р•СЃР»Рё СЃС†РµРЅР° СѓР¶Рµ РїРµСЂРµР·Р°РїСѓСЃРєР°Р»Р°СЃСЊ вЂ” СЃРЅРёРјР°СЋ С„Р»Р°Рі
+                if (sceneHasRestartedDueToHmdRemoval)
                 {
                     sceneHasRestartedDueToHmdRemoval = false;
                 }

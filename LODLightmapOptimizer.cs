@@ -12,19 +12,19 @@ public class LODLightmapOptimizer : MonoBehaviour
     {
         if (parentObject == null)
         {
-            Debug.LogError("Укажите родительский объект!");
+            Debug.LogError("РќРµ Р·Р°РґР°РЅ СЂРѕРґРёС‚РµР»СЊСЃРєРёР№ РѕР±СЉРµРєС‚!");
             return;
         }
 
         if (customLightmapParameters == null)
         {
-            Debug.LogError("Укажите параметры лайтмапов в поле Custom Lightmap Parameters!");
+            Debug.LogError("РќРµ РІС‹Р±СЂР°РЅС‹ РїР°СЂР°РјРµС‚СЂС‹ РѕСЃРІРµС‰РµРЅРёСЏ (Custom Lightmap Parameters)!");
             return;
         }
 
-        // Найти все LOD группы
+        // РћР±С…РѕР¶Сѓ РІСЃРµ LODвЂ‘РіСЂСѓРїРїС‹ РїРѕРґ СЂРѕРґРёС‚РµР»РµРј
         LODGroup[] lodGroups = parentObject.GetComponentsInChildren<LODGroup>(true);
-        Debug.Log($"Найдено LOD групп: {lodGroups.Length}");
+        Debug.Log($"РќР°Р№РґРµРЅРѕ LODвЂ‘РіСЂСѓРїРї: {lodGroups.Length}");
 
         int totalRenderers = 0;
 
@@ -36,7 +36,7 @@ public class LODLightmapOptimizer : MonoBehaviour
             {
                 float scaleFactor = lod0ScaleFactor;
 
-                // Для последующих уровней LOD применяем уменьшающий фактор
+                // Р§РµРј РЅРёР¶Рµ СѓСЂРѕРІРµРЅСЊ LOD, С‚РµРј РјРµРЅСЊС€Рµ Scale in Lightmap
                 if (i > 0)
                 {
                     scaleFactor *= Mathf.Pow(lodScaleReductionFactor, i);
@@ -46,14 +46,14 @@ public class LODLightmapOptimizer : MonoBehaviour
                 {
                     if (renderer != null)
                     {
-                        // Получаем SerializedObject для редактирования protected/private полей
+                        // Р§РµСЂРµР· SerializedObject РјРµРЅСЏСЋ Р·Р°С‰РёС‰С‘РЅРЅС‹Рµ РїРѕР»СЏ СЂРµРЅРґРµСЂР°
                         SerializedObject serializedRenderer = new SerializedObject(renderer);
 
-                        // Устанавливаем Scale in Lightmap
+                        // Scale in Lightmap
                         SerializedProperty scaleInLightmap = serializedRenderer.FindProperty("m_ScaleInLightmap");
                         scaleInLightmap.floatValue = scaleFactor;
 
-                        // Устанавливаем Lightmap Parameters
+                        // Lightmap Parameters
                         SerializedProperty lightmapParams = serializedRenderer.FindProperty("m_LightmapParameters");
                         lightmapParams.objectReferenceValue = customLightmapParameters;
 
@@ -64,7 +64,7 @@ public class LODLightmapOptimizer : MonoBehaviour
             }
         }
 
-        Debug.Log($"Обработка завершена. Настройки применены к {totalRenderers} рендерерам.");
+        Debug.Log($"Р“РѕС‚РѕРІРѕ. РќР°СЃС‚СЂРѕР№РєРё РїСЂРёРјРµРЅРµРЅС‹ Рє {totalRenderers} СЂРµРЅРґРµСЂР°Рј.");
     }
 }
 
@@ -78,9 +78,9 @@ public class LODLightmapOptimizerEditor : Editor
 
         LODLightmapOptimizer optimizer = (LODLightmapOptimizer)target;
 
-        EditorGUILayout.HelpBox("1. Перетащите родительский объект с LOD-группами\n2. Перетащите параметры лайтмапов (Default-VeryLowResolution)\n3. Настройте масштабные факторы\n4. Нажмите кнопку", MessageType.Info);
+        EditorGUILayout.HelpBox("1) РЈРєР°Р¶Рё СЂРѕРґРёС‚РµР»СЊСЃРєРёР№ РѕР±СЉРµРєС‚ СЃ LOD\n2) Р’С‹Р±РµСЂРё Lightmap Parameters (РЅР°РїСЂРёРјРµСЂ, Default-VeryLowResolution)\n3) РќР°СЃС‚СЂРѕР№ РєРѕСЌС„С„РёС†РёРµРЅС‚С‹\n4) РќР°Р¶РјРё РєРЅРѕРїРєСѓ", MessageType.Info);
 
-        if (GUILayout.Button("Оптимизировать LODs"))
+        if (GUILayout.Button("РћРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ LODs"))
         {
             optimizer.OptimizeLODs();
         }

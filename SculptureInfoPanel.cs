@@ -3,27 +3,27 @@ using System.Collections.Generic;
 
 public class SculptureInfoPanel : MonoBehaviour
 {
-    [Tooltip("Объект игрока (для проверки расстояния)")]
+    [Tooltip("РЎСЃС‹Р»РєР° РЅР° РёРіСЂРѕРєР° (РєР°РјРµСЂР°/СЂРёРіРё)")]
     public Transform player;
 
-    [Tooltip("Скорость анимации появления объектов")]
+    [Tooltip("РЎРєРѕСЂРѕСЃС‚СЊ Р°РЅРёРјР°С†РёРё РїРѕСЏРІР»РµРЅРёСЏ/РёСЃС‡РµР·РЅРѕРІРµРЅРёСЏ")]
     public float animationSpeed = 5.0f;
 
-    [Tooltip("Проверять расстояние с интервалом (секунды)")]
+    [Tooltip("РљР°Рє С‡Р°СЃС‚Рѕ РїСЂРѕРІРµСЂСЏС‚СЊ РґРёСЃС‚Р°РЅС†РёСЋ (СЃРµРє)")]
     public float checkInterval = 0.1f;
 
-    [Tooltip("Задержка перед выключением (секунды)")]
+    [Tooltip("Р—Р°РґРµСЂР¶РєР° РґРѕ СЃРєСЂС‹С‚РёСЏ (СЃРµРє)")]
     public float deactivationDelay = 2.0f;
 
-    [Tooltip("Включить отладку")]
+    [Tooltip("РћС‚Р»Р°РґРѕС‡РЅС‹Рµ Р»РѕРіРё")]
     public bool debugMode = false;
 
     [System.Serializable]
     public class SculpturePanel
     {
-        public Transform sculpture; // Скульптура
-        public GameObject infoPanel; // Информационная панель
-        [Tooltip("Радиус активации (в метрах)")]
+        public Transform sculpture; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        public GameObject infoPanel; // РџР°РЅРµР»СЊ СЃ РёРЅС„Рѕ
+        [Tooltip("Р”РёСЃС‚Р°РЅС†РёСЏ Р°РєС‚РёРІР°С†РёРё (РІ РјРµС‚СЂР°С…)")]
         public float activationDistance = 2.5f;
         [HideInInspector]
         public bool isActive = false;
@@ -31,11 +31,11 @@ public class SculptureInfoPanel : MonoBehaviour
         public bool isInRadius = false;
         [HideInInspector]
         public float deactivationTimer = 0f;
-        [Tooltip("Дополнительные объекты, которые будут активироваться (свет, эффекты и др.)")]
+        [Tooltip("Р”РѕРї. РѕР±СЉРµРєС‚С‹, РєРѕС‚РѕСЂС‹Рµ С‚РѕР¶Рµ РїРѕРєР°Р·С‹РІР°С‚СЊ (РёРєРѕРЅРєРё, СЃРІРµС‚ Рё С‚.Рї.)")]
         public List<GameObject> additionalObjects = new List<GameObject>();
     }
 
-    [Header("Скульптуры и связанные объекты")]
+    [Header("РЎРєСѓР»СЊРїС‚СѓСЂС‹ Рё РёС… РїР°РЅРµР»Рё")]
     public List<SculpturePanel> sculpturePanels = new List<SculpturePanel>();
 
     private float timer = 0f;
@@ -44,7 +44,7 @@ public class SculptureInfoPanel : MonoBehaviour
     private Dictionary<GameObject, bool> objectActivationState = new Dictionary<GameObject, bool>();
     private Dictionary<GameObject, float> originalLightIntensity = new Dictionary<GameObject, float>();
 
-    // Пороговые значения для масштаба
+    // РџРѕСЂРѕРі Р°РєС‚РёРІР°С†РёРё/СЃРєСЂС‹С‚РёСЏ
     private const float ACTIVATION_THRESHOLD = 0.05f;
     private const float DEACTIVATION_THRESHOLD = 0.01f;
 
@@ -52,55 +52,55 @@ public class SculptureInfoPanel : MonoBehaviour
     {
         if (player == null)
         {
-            Debug.LogError("Не назначен объект player!");
+            Debug.LogError("РќРµ Р·Р°РґР°РЅ player!");
             enabled = false;
             return;
         }
 
-        // Инициализация всех объектов
+        // РРЅРёС†РёР°Р»РёР·РёСЂСѓСЋ СЌР»РµРјРµРЅС‚С‹
         foreach (var item in sculpturePanels)
         {
             InitializeItem(item);
         }
 
-        // Немедленно проверяем расстояние до скульптур при старте
+        // РџРµСЂРІРёС‡РЅР°СЏ РїСЂРѕРІРµСЂРєР° РґРёСЃС‚Р°РЅС†РёРё
         CheckSculptureProximity();
 
-        // Обновляем видимость объектов на основе начальной проверки
+        // РЎРёРЅС…СЂРѕРЅРёР·РёСЂСѓСЋ РІРёРґРёРјРѕСЃС‚СЊ РѕР±СЉРµРєС‚РѕРІ
         UpdateObjectVisibility();
 
         if (debugMode)
-            Debug.Log("SculptureInfoPanel: инициализация завершена. Найдено " + sculpturePanels.Count + " скульптур.");
+            Debug.Log("SculptureInfoPanel: РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Р·Р°РІРµСЂС€РµРЅР°. Р­Р»РµРјРµРЅС‚РѕРІ: " + sculpturePanels.Count);
     }
 
     void InitializeItem(SculpturePanel item)
     {
-        // Настройка панели
+        // РџР°РЅРµР»СЊ
         if (item.infoPanel != null)
         {
-            // Сохраняем оригинальный масштаб
+            // РЎРѕС…СЂР°РЅСЏСЋ РёСЃС…РѕРґРЅС‹Р№ РјР°СЃС€С‚Р°Р±
             originalScale[item.infoPanel] = item.infoPanel.transform.localScale;
             currentScaleFactor[item.infoPanel] = 0f;
             objectActivationState[item.infoPanel] = false;
 
-            // Скрываем объект
+            // РџСЂСЏС‡Сѓ
             item.infoPanel.transform.localScale = Vector3.zero;
             item.infoPanel.SetActive(false);
         }
 
-        // Настройка дополнительных объектов
+        // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РѕР±СЉРµРєС‚С‹
         foreach (var obj in item.additionalObjects)
         {
             if (obj != null)
             {
-                // Запоминаем исходное состояние активации
+                // РЎРѕС…СЂР°РЅСЏСЋ СЃРѕСЃС‚РѕСЏРЅРёРµ
                 objectActivationState[obj] = false;
 
-                // Сохраняем оригинальный масштаб
+                // РЎРѕС…СЂР°РЅСЏСЋ РјР°СЃС€С‚Р°Р±
                 originalScale[obj] = obj.transform.localScale;
                 currentScaleFactor[obj] = 0f;
 
-                // Для источников света запоминаем исходную интенсивность
+                // Р•СЃР»Рё СЌС‚Рѕ СЃРІРµС‚ вЂ” Р·Р°РЅРѕС€Сѓ РёСЃС…РѕРґРЅСѓСЋ РёРЅС‚РµРЅСЃРёРІРЅРѕСЃС‚СЊ
                 Light light = obj.GetComponent<Light>();
                 if (light != null)
                 {
@@ -108,13 +108,13 @@ public class SculptureInfoPanel : MonoBehaviour
                     light.intensity = 0f;
                 }
 
-                // Изначально скрываем объект
+                // РџСЂСЏС‡Сѓ
                 obj.transform.localScale = Vector3.zero;
                 obj.SetActive(false);
             }
         }
 
-        // Изначально неактивны
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         item.isActive = false;
         item.isInRadius = false;
         item.deactivationTimer = 0f;
@@ -122,7 +122,7 @@ public class SculptureInfoPanel : MonoBehaviour
 
     void Update()
     {
-        // Проверяем расстояние с интервалом
+        // РўР°Р№РјРµСЂ РїСЂРѕРІРµСЂРєРё РґРёСЃС‚Р°РЅС†РёРё
         timer += Time.deltaTime;
         if (timer >= checkInterval)
         {
@@ -130,10 +130,10 @@ public class SculptureInfoPanel : MonoBehaviour
             timer = 0f;
         }
 
-        // Обработка таймеров деактивации
+        // РћР±СЂР°Р±Р°С‚С‹РІР°СЋ С‚Р°Р№РјРµСЂ СЃРєСЂС‹С‚РёСЏ
         ProcessDeactivationTimers();
 
-        // Обновляем видимость объектов
+        // РћР±РЅРѕРІР»СЏСЋ РІРёРґРёРјРѕСЃС‚СЊ
         UpdateObjectVisibility();
     }
 
@@ -143,32 +143,32 @@ public class SculptureInfoPanel : MonoBehaviour
         {
             if (item.sculpture == null) continue;
 
-            // Проверяем расстояние до скульптуры
+            // Р”РёСЃС‚Р°РЅС†РёСЏ РґРѕ СЃРєСѓР»СЊРїС‚СѓСЂС‹
             float distance = Vector3.Distance(player.position, item.sculpture.position);
 
-            // Сохраняем предыдущее состояние
+            // РЎРѕС…СЂР°РЅСЏСЋ СЃС‚Р°СЂРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
             bool wasInRadius = item.isInRadius;
 
-            // Обновляем состояние нахождения в радиусе
+            // Р’ СЂР°РґРёСѓСЃРµ РёР»Рё РЅРµС‚
             item.isInRadius = distance <= item.activationDistance;
 
-            // Если вошел в радиус
+            // Р’РѕС€С‘Р» РІ СЂР°РґРёСѓСЃ
             if (!wasInRadius && item.isInRadius)
             {
                 item.isActive = true;
-                item.deactivationTimer = 0f; // Сбрасываем таймер
+                item.deactivationTimer = 0f;
 
                 if (debugMode)
-                    Debug.Log("Игрок вошел в радиус скульптуры: " + item.sculpture.name);
+                    Debug.Log("Р’ СЂР°РґРёСѓСЃРµ СЃРєСѓР»СЊРїС‚СѓСЂС‹: " + item.sculpture.name);
             }
-            // Если вышел из радиуса
+            // Р’С‹С€РµР» РёР· СЂР°РґРёСѓСЃР°
             else if (wasInRadius && !item.isInRadius)
             {
-                // Запускаем таймер деактивации, но пока не деактивируем
+                // Р—Р°РїСѓСЃРєР°СЋ С‚Р°Р№РјРµСЂ СЃРєСЂС‹С‚РёСЏ
                 item.deactivationTimer = deactivationDelay;
 
                 if (debugMode)
-                    Debug.Log("Игрок вышел из радиуса скульптуры: " + item.sculpture.name + ". Начало отсчета таймера.");
+                    Debug.Log("РџРѕРєРёРЅСѓР» СЂР°РґРёСѓСЃ: " + item.sculpture.name + ". Р—Р°РїСѓС‰РµРЅР° Р·Р°РґРµСЂР¶РєР° СЃРєСЂС‹С‚РёСЏ.");
             }
         }
     }
@@ -177,19 +177,19 @@ public class SculptureInfoPanel : MonoBehaviour
     {
         foreach (var item in sculpturePanels)
         {
-            // Если запущен таймер деактивации
+            // Р•СЃР»Рё РёРґС‘С‚ РѕС‚СЃС‡С‘С‚ РґРѕ СЃРєСЂС‹С‚РёСЏ
             if (item.deactivationTimer > 0)
             {
-                // Уменьшаем таймер
+                // РўРёРєР°СЋ С‚Р°Р№РјРµСЂ
                 item.deactivationTimer -= Time.deltaTime;
 
-                // Если таймер истек
+                // РСЃС‚С‘Рє вЂ” СЃРєСЂС‹РІР°СЋ
                 if (item.deactivationTimer <= 0)
                 {
                     item.isActive = false;
 
                     if (debugMode)
-                        Debug.Log("Таймер истек, деактивация объектов для скульптуры: " + item.sculpture.name);
+                        Debug.Log("РЎРїСЂСЏС‚Р°Р» СЌР»РµРјРµРЅС‚С‹ РґР»СЏ: " + item.sculpture.name);
                 }
             }
         }
@@ -201,10 +201,10 @@ public class SculptureInfoPanel : MonoBehaviour
         {
             float targetScale = item.isActive ? 1f : 0f;
 
-            // Обновляем панель
+            // РџР°РЅРµР»СЊ
             AnimateObject(item.infoPanel, targetScale);
 
-            // Обновляем все дополнительные объекты
+            // Р”РѕРї. РѕР±СЉРµРєС‚С‹
             foreach (var obj in item.additionalObjects)
             {
                 if (obj != null)
@@ -219,73 +219,73 @@ public class SculptureInfoPanel : MonoBehaviour
     {
         if (obj == null) return;
 
-        // Проверяем текущее состояние активации
+        // РўРµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р°РєС‚РёРІРЅРѕСЃС‚Рё
         bool isCurrentlyActive = objectActivationState.ContainsKey(obj) ?
                                 objectActivationState[obj] : obj.activeSelf;
 
-        // Получаем текущий масштаб
+        // РўРµРєСѓС‰РёР№ РјР°СЃС€С‚Р°Р±
         float currentScale = currentScaleFactor.ContainsKey(obj) ? currentScaleFactor[obj] : 0f;
 
-        // Постепенно изменяем масштаб
+        // РќРѕРІС‹Р№ РјР°СЃС€С‚Р°Р± РїРѕ РїР»Р°РІРЅРѕР№ РёРЅС‚РµСЂРїРѕР»СЏС†РёРё
         float newScale = Mathf.Lerp(currentScale, targetScale, Time.deltaTime * animationSpeed);
         currentScaleFactor[obj] = newScale;
 
-        // Логика активации с гистерезисом
+        // Р’РєР»СЋС‡РµРЅРёРµ/РІС‹РєР»СЋС‡РµРЅРёРµ РїРѕ РїРѕСЂРѕРіР°Рј
         if (!isCurrentlyActive && newScale > ACTIVATION_THRESHOLD)
         {
-            // Активируем объект только когда масштаб достаточно большой
+            // Р’РєР»СЋС‡Р°СЋ РєРѕРіРґР° РґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЂР°СЃРїР°С…РЅСѓР»СЃСЏ
             obj.SetActive(true);
             objectActivationState[obj] = true;
 
             if (debugMode)
-                Debug.Log("Активация объекта: " + obj.name + " (scale: " + newScale + ")");
+                Debug.Log("Р’РєР»СЋС‡РёР» РѕР±СЉРµРєС‚: " + obj.name + " (scale: " + newScale + ")");
         }
         else if (isCurrentlyActive && newScale < DEACTIVATION_THRESHOLD)
         {
-            // Деактивируем объект только когда масштаб почти нулевой
+            // Р’С‹РєР»СЋС‡Р°СЋ РєРѕРіРґР° РїРѕС‡С‚Рё СЃС…Р»РѕРїРЅСѓР»СЃСЏ
             obj.SetActive(false);
             objectActivationState[obj] = false;
 
             if (debugMode)
-                Debug.Log("Деактивация объекта: " + obj.name + " (scale: " + newScale + ")");
+                Debug.Log("Р’С‹РєР»СЋС‡РёР» РѕР±СЉРµРєС‚: " + obj.name + " (scale: " + newScale + ")");
         }
 
-        // Применяем масштаб к объекту, если он активен
+        // РћР±РЅРѕРІР»СЏСЋ РІРёР·СѓР°Р», РµСЃР»Рё РѕР±СЉРµРєС‚ РІРєР»СЋС‡С‘РЅ
         if (obj.activeSelf)
         {
-            // Источники света обрабатываем отдельно
+            // РџРѕРґРґРµСЂР¶РёРІР°СЋ СЏСЂРєРѕСЃС‚СЊ СЃРІРµС‚Р°
             Light light = obj.GetComponent<Light>();
             if (light != null)
             {
-                // Для света используем интенсивность вместо масштаба
+                // РњР°СЃС€С‚Р°Р±РёСЂСѓСЋ РёРЅС‚РµРЅСЃРёРІРЅРѕСЃС‚СЊ
                 float originalIntensity = originalLightIntensity.ContainsKey(obj) ?
                                          originalLightIntensity[obj] : 1.0f;
                 light.intensity = originalIntensity * newScale;
             }
             else
             {
-                // Для остальных объектов изменяем масштаб
+                // РњР°СЃС€С‚Р°Р± РґР»СЏ РѕР±С‹С‡РЅС‹С… РѕР±СЉРµРєС‚РѕРІ
                 Vector3 origScale = originalScale.ContainsKey(obj) ? originalScale[obj] : Vector3.one;
                 obj.transform.localScale = origScale * newScale;
             }
         }
     }
 
-    // Визуализация в редакторе
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     void OnDrawGizmosSelected()
     {
         foreach (var item in sculpturePanels)
         {
             if (item.sculpture != null)
             {
-                // Рисуем сферу радиуса активации
+                // Р Р°РґРёСѓСЃ Р°РєС‚РёРІР°С†РёРё
                 Gizmos.color = Color.green;
                 Gizmos.DrawWireSphere(item.sculpture.position, item.activationDistance);
 
 #if UNITY_EDITOR
                 UnityEditor.Handles.color = Color.white;
                 UnityEditor.Handles.Label(item.sculpture.position + Vector3.up * 0.5f,
-                    item.sculpture.name + " (Радиус: " + item.activationDistance + "м)");
+                    item.sculpture.name + " (СЂР°РґРёСѓСЃ: " + item.activationDistance + "Рј)");
 #endif
             }
         }

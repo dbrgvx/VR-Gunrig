@@ -9,7 +9,7 @@ public class LODOptimizer : MonoBehaviour
     {
         if (parentObject == null)
         {
-            Debug.LogError("Родительский объект не указан!");
+            Debug.LogError("Р РѕРґРёС‚РµР»СЊСЃРєРёР№ РѕР±СЉРµРєС‚ РЅРµ Р·Р°РґР°РЅ!");
             return;
         }
 
@@ -17,7 +17,7 @@ public class LODOptimizer : MonoBehaviour
 
         if (lodGroups.Length == 0)
         {
-            Debug.LogWarning("LOD групп не найдено в дочерних объектах!");
+            Debug.LogWarning("LODвЂ‘РіСЂСѓРїРїС‹ Сѓ РїРѕС‚РѕРјРєРѕРІ РЅРµ РЅР°Р№РґРµРЅС‹!");
             return;
         }
 
@@ -27,33 +27,33 @@ public class LODOptimizer : MonoBehaviour
         {
             LOD[] lods = lodGroup.GetLODs();
 
-            // Проверяем, достаточно ли LOD в группе
+            // РџСЂРѕРІРµСЂСЏСЋ, РµСЃС‚СЊ Р»Рё РјРёРЅРёРјСѓРј РґРІР° СѓСЂРѕРІРЅСЏ LOD
             if (lods.Length < 2)
             {
-                Debug.LogWarning("Недостаточно LOD в группе: " + lodGroup.gameObject.name);
+                Debug.LogWarning("РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ LOD Сѓ РѕР±СЉРµРєС‚Р°: " + lodGroup.gameObject.name);
                 continue;
             }
 
-            // Создаем новый массив LOD (без LOD2, если он был)
+            // РћСЃС‚Р°РІР»СЏСЋ С‚РѕР»СЊРєРѕ LOD0 Рё LOD1
             LOD[] newLods;
-            if (lods.Length > 2) // Если есть LOD2 (или больше)
+            if (lods.Length > 2)
             {
-                newLods = new LOD[2]; // LOD0 и LOD1 
-                newLods[0] = lods[0]; // Сохраняем LOD0 как есть
-                newLods[1] = lods[1]; // Сохраняем LOD1
+                newLods = new LOD[2];
+                newLods[0] = lods[0];
+                newLods[1] = lods[1];
             }
-            else // Только LOD0 и LOD1
+            else
             {
                 newLods = new LOD[2];
                 newLods[0] = lods[0];
                 newLods[1] = lods[1];
             }
 
-            // Устанавливаем процентные значения
-            newLods[0].screenRelativeTransitionHeight = 0.05f; // LOD0 - по умолчанию
-            newLods[1].screenRelativeTransitionHeight = 0.0f;  // LOD1 - 0% (Culled)
+            // РџРѕСЂРѕРі РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ
+            newLods[0].screenRelativeTransitionHeight = 0.05f; // LOD0 вЂ” РїРѕС‡С‚Рё РІСЃРµРіРґР°
+            newLods[1].screenRelativeTransitionHeight = 0.0f;  // LOD1 вЂ” culled
 
-            // Отключаем рендереры LOD1 от запекания освещения
+            // Р”Р»СЏ LOD1 СѓР±РёСЂР°СЋ РІРєР»Р°Рґ РІ GI
             foreach (Renderer renderer in newLods[1].renderers)
             {
                 if (renderer != null)
@@ -65,14 +65,14 @@ public class LODOptimizer : MonoBehaviour
                 }
             }
 
-            // Применяем новые настройки LOD
+            // РџСЂРёРјРµРЅСЏСЋ РЅРѕРІС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё
             lodGroup.SetLODs(newLods);
             EditorUtility.SetDirty(lodGroup);
 
             groupsProcessed++;
         }
 
-        Debug.Log("Оптимизировано LOD групп: " + groupsProcessed);
+        Debug.Log("РћРїС‚РёРјРёР·РёСЂРѕРІР°РЅРѕ LODвЂ‘РіСЂСѓРїРї: " + groupsProcessed);
     }
 }
 
@@ -86,7 +86,7 @@ public class LODOptimizerEditor : Editor
 
         LODOptimizer optimizer = (LODOptimizer)target;
 
-        if (GUILayout.Button("Оптимизировать LOD"))
+        if (GUILayout.Button("РћРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ LOD"))
         {
             optimizer.OptimizeLODs();
         }

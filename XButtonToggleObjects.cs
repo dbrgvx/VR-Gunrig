@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class XButtonToggleObjects : MonoBehaviour
 {
-    [Header("Настройка ввода")]
-    [Tooltip("Нажатие уже использовано")]
+    [Header("РЎРѕСЃС‚РѕСЏРЅРёРµ РєРЅРѕРїРєРё")]
+    [Tooltip("РћРґРЅРѕСЂР°Р·РѕРІС‹Р№ СЂРµР¶РёРј")]
     public bool alreadyUsed = false;
     [SerializeField] private float buttonCooldown = 0.5f;
 
-    [Header("Объекты для активации")]
-    [Tooltip("Объекты, которые нужно ВКЛЮЧИТЬ при нажатии X")]
+    [Header("Р’РєР»СЋС‡РёС‚СЊ РѕР±СЉРµРєС‚С‹")]
+    [Tooltip("РЎРїРёСЃРѕРє, РєРѕС‚РѕСЂС‹Р№ РІРєР»СЋС‡Р°РµРј РїРѕ X")]
     public List<GameObject> objectsToEnable = new List<GameObject>();
 
-    [Header("Объекты для деактивации")]
-    [Tooltip("Объекты, которые нужно ВЫКЛЮЧИТЬ при нажатии X")]
+    [Header("Р’С‹РєР»СЋС‡РёС‚СЊ РѕР±СЉРµРєС‚С‹")]
+    [Tooltip("РЎРїРёСЃРѕРє, РєРѕС‚РѕСЂС‹Р№ РІС‹РєР»СЋС‡Р°РµРј РїРѕ X")]
     public List<GameObject> objectsToDisable = new List<GameObject>();
 
-    [Header("Отладка")]
-    [Tooltip("Вывод отладочных сообщений в консоль")]
+    [Header("РћС‚Р»Р°РґРєР°")]
+    [Tooltip("РџРµС‡Р°С‚Р°С‚СЊ Р»РѕРіРё РІ РєРѕРЅСЃРѕР»СЊ")]
     public bool showDebug = true;
 
     private bool canPress = true;
@@ -25,11 +25,11 @@ public class XButtonToggleObjects : MonoBehaviour
 
     void Update()
     {
-        // Если функция уже использована, выходим
+        // Р•СЃР»Рё СѓР¶Рµ РѕС‚СЂР°Р±РѕС‚Р°Р»Рё вЂ” РІС‹С…РѕРґРёРј
         if (alreadyUsed)
             return;
 
-        // Кулдаун для кнопки
+        // РљСѓР»РґР°СѓРЅ
         if (!canPress)
         {
             cooldownTimer -= Time.unscaledDeltaTime;
@@ -39,43 +39,43 @@ public class XButtonToggleObjects : MonoBehaviour
             }
         }
 
-        // Проверка нажатия кнопки X на левом контроллере
+        // РљРЅРѕРїРєР° X РЅР° Р»РµРІРѕРј РєРѕРЅС‚СЂРѕР»Р»РµСЂРµ
         if (canPress && OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
         {
-            // Выключаем объекты
+            // Р’С‹РєР»СЋС‡Р°СЋ СЃРїРёСЃРѕРє
             foreach (var obj in objectsToDisable)
             {
                 if (obj != null)
                 {
                     obj.SetActive(false);
-                    if (showDebug) Debug.Log($"Выключен: {obj.name}");
+                    if (showDebug) Debug.Log($"Р’С‹РєР»СЋС‡РµРЅ: {obj.name}");
                 }
             }
 
-            // Включаем объекты
+            // Р’РєР»СЋС‡Р°СЋ СЃРїРёСЃРѕРє
             foreach (var obj in objectsToEnable)
             {
                 if (obj != null)
                 {
                     obj.SetActive(true);
-                    if (showDebug) Debug.Log($"Включен: {obj.name}");
+                    if (showDebug) Debug.Log($"Р’РєР»СЋС‡РµРЅ: {obj.name}");
                 }
             }
 
-            // Отмечаем, что функция уже использована
+            // РћРґРЅРѕСЂР°Р·РѕРІС‹Р№ СЂРµР¶РёРј
             alreadyUsed = true;
             canPress = false;
             cooldownTimer = buttonCooldown;
 
-            if (showDebug) Debug.Log("Кнопка X нажата - объекты переключены");
+            if (showDebug) Debug.Log("РќР°Р¶Р°С‚РёРµ X вЂ” РїРµСЂРµРєР»СЋС‡РµРЅРёРµ РІС‹РїРѕР»РЅРµРЅРѕ");
         }
     }
 
-    // Метод для программного сброса
+    // РЎР±СЂРѕСЃ РѕРґРЅРѕСЂР°Р·РѕРІРѕРіРѕ СЂРµР¶РёРјР°
     public void ResetToggle()
     {
         alreadyUsed = false;
         canPress = true;
-        if (showDebug) Debug.Log("Сброс состояния переключателя");
+        if (showDebug) Debug.Log("РЎР±СЂРѕСЃ РїРµСЂРµРєР»СЋС‡Р°С‚РµР»СЏ РІС‹РїРѕР»РЅРµРЅ");
     }
 }
