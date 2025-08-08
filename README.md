@@ -13,10 +13,6 @@
 - SimpleVRLocomotion.cs  передвижение через OVRInput + CharacterController: мульти-лучевой грaундчек, гравитация, следование рельефу, защита от сфер.
 - XButtonToggleObjects.cs  однократное переключение наборов объектов по X (левый контроллер), кулдаун, логи.
 
-### Ссылки
-- Репозиторий: https://github.com/dbrgvx/VR-Gunrig
-- Публикация: https://arigus.tv/news/culture/160300-virtualnyy-tur-po-mandale-gunrig-prezentovali-v-ulan-ude/
-
 ### Стек
 - Unity 2022.3.59f1
 - Meta XR Core SDK 74.0.0
